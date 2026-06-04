@@ -1,0 +1,3 @@
+Add into logs
+INFO: Docker API endpoint responding at unix:///var/run/docker.sock
+INFO: Detected API version compatibility: 1.41+

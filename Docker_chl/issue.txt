@@ -1,0 +1,18 @@
+[2026-06-04 07:52:21,643] ERROR in app: Exception on /lookup [POST]
+web-1  | Traceback (most recent call last):
+web-1  |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+web-1  |     response = self.full_dispatch_request()
+web-1  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1  |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+web-1  |     rv = self.handle_user_exception(e)
+web-1  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1  |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+web-1  |     rv = self.dispatch_request()
+web-1  |          ^^^^^^^^^^^^^^^^^^^^^^^
+web-1  |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+web-1  |     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+web-1  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1  |   File "/app/app.py", line 22, in lookup
+web-1  |     host = request.request.get("host", "")
+web-1  |            ^^^^^^^^^^^^^^^
+web-1  | AttributeError: 'Request' object has no attribute 'request'

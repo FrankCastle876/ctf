@@ -1,0 +1,6 @@
+2025-11-12 10:33:21 INFO Starting Internal DNS Diagnostics
+2025-11-12 10:33:21 INFO Loading cached configuration
+2025-11-12 10:33:21 WARN Docker client unavailable
+2025-11-12 10:33:21 INFO Retrying connection to unix:///var/run/docker.sock
+2025-11-12 10:33:22 INFO Connected
+2025-11-12 10:33:22 INFO Cache warmup complete
