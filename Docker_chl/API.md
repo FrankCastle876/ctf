@@ -1,5 +1,5 @@
 Start escape container:
-<pre></pre>
+<pre>
 curl -X POST \
 --unix-socket /var/run/docker.sock \
 -H "Content-Type: application/json" \
