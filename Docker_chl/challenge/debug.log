@@ -4,3 +4,5 @@
 2025-11-12 10:33:21 INFO Retrying connection to unix:///var/run/docker.sock
 2025-11-12 10:33:22 INFO Connected
 2025-11-12 10:33:22 INFO Cache warmup complete
+INFO: Docker API endpoint responding at unix:///var/run/docker.sock
+INFO: Detected API version compatibility: 1.41+
