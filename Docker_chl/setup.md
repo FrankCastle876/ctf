@@ -20,25 +20,18 @@ Intended path:
 
 Web app
  |
- v
 RCE
  |
- v
 Shell in container
  |
- v
 Enumeration
  |
- v
 Discover /var/run/docker.sock
  |
- v
 Interact with docker API
  |
- v 
 Create new container with host mounted
  |
- v
 Read flag
 
 
