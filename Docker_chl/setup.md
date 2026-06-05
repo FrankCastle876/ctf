@@ -10,9 +10,9 @@ Solve:
 2. Enumeration should include finding with "ls -l /var/run/docker.sock" and "/app/log/debug.log"
 3. In logs they should find also the API logging
 4. They discover with:  
-	4.1 curl --unix-socket /var/run/docker.sock http://localhost/version
-	4.2 curl --unix-socket /var/run/docker.sock http://localhost/_ping
-	4.3 curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+	4.1 curl --unix-socket /var/run/docker.sock http://localhost/version  
+	4.2 curl --unix-socket /var/run/docker.sock http://localhost/_ping  
+	4.3 curl --unix-socket /var/run/docker.sock http://localhost/containers/json  
 5. Look for API exploit in API.md file
 
 
