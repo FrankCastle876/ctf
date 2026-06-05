@@ -13,7 +13,7 @@ Solve:
 	4.1 curl --unix-socket /var/run/docker.sock http://localhost/version
 	4.2 curl --unix-socket /var/run/docker.sock http://localhost/_ping
 	4.3 curl --unix-socket /var/run/docker.sock http://localhost/containers/json
-5. 
+5. Look for API exploit in API.md file
 
 
 Intended path:
